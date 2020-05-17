@@ -144,19 +144,6 @@ for(i in 1:8){
   }
 }
 
-#tryzone
-example<-xdata[[8]]
-example<-cbind(example,trend=NA)
-for (j in (HHHH+3):dim(example)[1]){
-  example[j,"trend"]<-lasttrend(example,HHHH,index(example[j]))
-}
-j<-250
-example[200]$trend
-tail(example,30)
-lasttrend(xdata[[8]],HHHH,)
-tail(rbind(xdata[[8]],xts(coredata(last(xdata[[8]])),Sys.Date())))
-tail(xdata[[8]])
-i<-8
 
 
 #function to generate trend component at index myindex as a linear model of length h+1 until two days before
