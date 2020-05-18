@@ -106,7 +106,7 @@ check_format <- function(predictions){
 subm_url = 'http://167.172.183.67'
 
 u_name = "Group9"
-p_word = "cyAmVBA2I7GSM8Mm"
+p_word = "asdfghjklşi"
 submit_now = FALSE
 
 username = u_name
