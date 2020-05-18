@@ -117,13 +117,12 @@ data = get_data(token=token,url=subm_url)
 
 predictions=unique(data[,list(product_content_id)])
 predictions[,forecast:=2.3]
-
 send_submission(predictions, token, url=subm_url, submit_now=F)
 
 
 
 
-#*****SELMAN*****
+#********SELMAN*********
 products<-unique(data$product_content_id)
 
 #import the data into a list of xts objects
@@ -155,7 +154,7 @@ lasttrend<-function(series,h,myindex){
 
 
 #generate trend component as linear model prediction of HHHH+1 observations ending two days ago
-HHHH<-20 #I found 20 to be good by balancing p value and residuals on an example, and visually it is fine.
+HHHH<-21 #I found 21 to be good by balancing p value and residuals on an example, and visually it is fine.
 for(i in 1:8){
   xdata[[i]]<-cbind(xdata[[i]],trend=NA)
   for (j in (HHHH+3):dim(xdata[[i]])[1]){
@@ -168,6 +167,87 @@ for(i in 1:8){
   xdata[[i]][which(xdata[[i]][,"price"]<0),"price"]<-NA
   xdata[[i]][,"price"]<-na.spline(xdata[[i]][,"price"])
 }
+
+
+
+#import google trends data from csv files
+gtrends<-xts()
+tformat(gtrends)<-"%Y-%m-%d"
+for(i in 1:8){
+  r<-read.csv(paste(as.character(i),".csv",sep=""),header=F)
+  gtrends<-cbind(gtrends,xts(r[,2],as.Date(r[,1])))
+}
+colnames(gtrends)<-c("1","2","3","4","5","6","7","8")
+
+
+
+
+#AT THIS POINT, IT COULD BE BENEFICIAL TO REPLACE REPEATED VALUES FOR PREDICTORS OF LAST THREE DAYS IN THE TABLES
+#WITH THEIR RESPECTIVE WINTERS PREDICTED VALUES IN TERMS OF PAST DATA
+#AT LEAST GIVE THE LAST WEEKS VALUES INSTEAD OF THE LAST OBSERVED VALUE
+
+#ALSO ADD COLUMNS FOR REGRESSORS OF 7 DAYS AGO AND 2 DAYS AGO FOR EVERY DAY
+
+#NOTICE FOR GTRENDS:
+#GTRENDS GO BACK 5 YEARS AND LAST 90 DAYS COULD BE DOWNLOADED DAILY SO THIS DATA SHOULD BE WINTERS-EXTRAPOLATED USING THE gtrends TABLE NOT XDATA
+
+
+
+#merge google trends data to xts structures
+for(i in 1:8){
+  xdata[[i]]<-cbind(xdata[[i]],gtrends[,i])
+  colnames(xdata[[i]])[length(colnames(xdata[[i]]))]<-"gtrends"
+  xdata[[i]][,"gtrends"]<-na.locf(xdata[[i]][,"gtrends"])   #last observaion carry forward for weekly trends data
+}
+
+
+
+#Add seasonal component for sales (CAN BE ADDED FOR OTHER PREDICTORS AS WELL)
+oneweek<-xts(NA,Sys.Date())
+twoweeks<-xts(NA,Sys.Date())
+threeweeks<-xts(NA,Sys.Date())
+
+for(i in 1:8){
+  xdata[[i]]<-cbind(xdata[[i]],oneweek,twoweeks,threeweeks)
+  range<-which(!is.na(xdata[[i]][,"sold_count"]))
+  for(j in range){
+    if(j<22)next
+    xdata[[i]][j,"oneweek"]<-xdata[[i]][j-7,"sold_count"]
+    xdata[[i]][j,"twoweeks"]<-xdata[[i]][j-14,"sold_count"]
+    xdata[[i]][j,"threeweeks"]<-xdata[[i]][j-21,"sold_count"]
+  }
+}  
+
+
+#BUILDING LINEAR MODEL!!!!!
+predict<-rep(0,8)
+
+
+#model generating function
+mymodel<-function(xtable,range){
+    df<-data.frame(coredata(xtable))   #first try a model of everything:
+    try<-lm(sold_count ~ .,data=df[range,]-1)
+    vars<-names(which(summary(try)$coefficients[2:9,4]<0.05))                      #pick significant variables
+    new<-as.formula(paste("sold_count ~", paste(vars,collapse="+"),"-1"))               # write the new formula
+    lm(new,data=df[range,])
+} 
+
+
+models<-lapply(xdata,mymodel,1:(dim(xdata[[8]])[1]-3))
+
+lapply(models,summary)
+real<-rep(0,8)
+#predict
+for(i in 1:8){
+  predict[i]<-predict(models[[i]],newdata=last(data.frame(coredata(xdata[[i]]))))
+  real[i]<-last(xdata[[i]])$sold_count
+}
+predict
+real
+
+result<-data.frame(product_content_id=products,forecast=predict)
+result<-as.data.table(result)
+send_submission(result, token, url=subm_url, submit_now=T)
 
 
 
