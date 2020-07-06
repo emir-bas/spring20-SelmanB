@@ -218,7 +218,10 @@ for(i in 1:8){
  
  
 ### GTrends 
-For another tool Google Trends data was preferred. Searches made on Google by buyers could be classified, modified and used for estimation. Google Trends data might be had yearly by weeks, or from last month by days. Monthly data was binded into yearly data to be used as a whole. 
+Visually, strong correlation of Google Trends data for tokens related to the products were observed, partly not described in the given data. This was enhanced substantially by the fact that the annual seasonality can not be inferred from the given data set due to its short duration. Google Trends, however, showed very strong annual seasonality for a very long time which could be used in the model. It should be noted, however, that this correlation varies significantly with respect to the individual products. This strongly supported the previous idea that each product type should be modelled separately. 
+
+The google trends data is supplied daily for tha last months and weekly for the past years. In order to preserve all the information in the data the short and long run data from Google Trends are independently downloaded and then merged, independent of whether it is going to be useful in the current version of the model building software. This was made to save the possibility to build more advanced models in the future.
+
 ```{r , warning=FALSE , message=FALSE}
 require(gtrendsR)
 #import google trends data
