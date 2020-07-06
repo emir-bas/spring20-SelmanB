@@ -207,8 +207,8 @@ for(i in 1:8){
 ``` 
  
  
-### Data Imputing
-Then, to fulfill ‘-1’ parts spline interpolation was used because it provides more unbiased and smoother estimates.
+### Data Cleaning
+Spline interpolation was used for missing data because it provides reasonable estimates and is a very robust technique. These missing data was mostly due to no sales being achieved in some days, leaving the effective sale price undetermined.  
 ```{r,  warning=FALSE , message=FALSE}
 for(i in 1:8){
   xdata[[i]][which(xdata[[i]][,"price"]<0),"price"]<-NA
