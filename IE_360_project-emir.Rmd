@@ -156,7 +156,6 @@ At the project, beginning code was provided. It ensured the code submissions to 
 ### Data Structuring
 It was decided that the data is to be stored as xts objects instead of relational data tables because of relative simplicity for time series analysis and lack of need for operations involving relational algebra. Then, regardless of whether the same model is to be used for all products of question or not, it was found more effective to store data related to products in separate tables for ease of processing. This necessitated storing individual xts tables including all regressors and past data in an R list sata structure and doing any subsequent operations looping through the list. Abstraction of variation of products into lengths of lists also provided basis for generalization of the same code for arbitrary sets of products.
 
-
 At the beginning of the study, number of products were checked. Those 8 products were needed to be split up to work on each item distinctively so we created distinct models. Thus, a list named ‘xdata’ was created to save each product separately day by day with the help of a for loop. In that loop, for every product, an xts object is created and added to the ‘xdata’. There is an xts object for each product that was provided within the past data.
 ```{r,  warning=FALSE , message=FALSE}
 products<-unique(data$product_content_id)
@@ -172,8 +171,7 @@ for(i in 1:length(products)){
 ### Data Padding
 In order to train and predict data on the same table, which would be convenient, the table was extended to include all dates including the day to be predicted, which is set to be tomorrow according to the system date. For the initial formation of this extended table, last-observation-carry-forward was employed for the missing data, which could be changed later. This enabled concurrent development of the rest of the project before a better extrapolation model could be built.
 
-
-Provided past data has some blank days in it. To prevent this situation to create greater problems, all blank days was fulfilled. . After that, there is not any blanks in the data. Sales estimates might be worked on.
+Provided data was not containing today's and tomorrow's data. To prevent this situation to create greater problems, these days' data are fulfilled. . After that, there is not any blanks in the data. Sales estimates might be worked on.
 ```{r,  warning=FALSE , message=FALSE}
 for(i in 1:8){
   l<-last(index(xdata[[i]]))
@@ -267,7 +265,7 @@ for(i in 1:8){
 ``` 
 
 
-### Alternative Modelling  
+### Alternative Regressor   
 Another approach was the importance of the last 3 weeks’ weekly data for each day. So this approach was for the last 22 days. sold_count data of 7 days before, 14 days before and 21 days before were added for each product everyday. This step was applied both to xdata and xdata_lag. If effectiveness of that approach is not satisfying, in the loop which was written to create a linear model, it was not going to be used.Output of the part until this point and output of the continuing part were compared and according to observations more dependable one submitted.
 ```{r,  warning=FALSE , message=FALSE}
   oneweek<-xts(NA,Sys.Date())
@@ -296,7 +294,7 @@ for(i in 1:8){
 
 
 ### Modelling 
-Approaches that are improved till here were for creating a linear model. After using all, intercept was removed. Here, a while loop checks p values of results of approaches. Until every regressor has a p value less than 0.05 while loop works. One by one, linearly they are removed by beginning with the highest p value. Finally, last model developed is returned. Models were formed for both xdata and xdata_lag. Estimations were done with lapply function.
+Approaches that are improved till here were for creating a linear model. After using all, intercept was removed. Here, a while loop checks p values of results of approaches. Until every regressor has a p value less than 0.05 while loop works. One by one, linearly they are removed by beginning with the highest p value. The purpose of using stepwise regressor elimination instead of more complex regressor elimination methods is the fact that it would not be cost effective to consturct 16 different models. Finally, last model developed is returned. Models were formed for both xdata and xdata_lag.  Models are built by lapply function.
 ```{r, warning=FALSE , message=FALSE}
 predict<-rep(0,8)
 predict_old <- rep(0,8)
