@@ -145,6 +145,8 @@ Prepared application programming interface lets this project to be performed as 
 Before preparing this project, it was required to study on DataCamp courses to understand the essence of the R for time series. There, besides all other courses, “Manipulating Time Series Data With xts and zoo in R”, “Time Series Analysis in R”, “Forecasting in R”, and “Forecasting Product Demand in R” courses were studied for that specific project.
 Terms like xts, White Noise (WN), Random Walk (RW), Trends, seasonality, stepwise modelling and cyclicity, or Mean Absolute Error (MAE),  Mean Absolute Percentage Error (MAPE) were studied on to shape the project model better with Autoregression (AR), Simple Moving Average (MA) and ARIMA(AutoRegressive Models Integrated Moving Average). Those applications will be used and explained in the following parts.
 
+The most significantly studied literature in this work is related to stepwise regression. This was made to allow building more generic models without the need to specify model building parameters for every product individually. After investigating various possibilities of the procedure, a rather orthodox technique was settled on, brief information about which can be found [here](https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Stepwise_Regression.pdf).
+
 
 ## Approach
 
