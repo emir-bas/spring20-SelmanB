@@ -349,4 +349,6 @@ predict[5] <- predict_old[5]
 
 
 ## Results & Conclusion
+It is determined that while automatization of model building reduces human labor put into the task, it yielded inferior results compared to hand-tuned model-building parameters. Taking into account the facts that it would be impossible to manually build models for a large set of such independent systems, and also that even most manual models need computer optimization to be successful; an efficient hybridization of the two approaches should be maintained. This study here was rather on the over-automated side of the spectrums. Yet, it is beneficial in the long term to try to automatize the as much as possible, due to advances in computing capabilities.
+
 After all, it is clear that predicting future sales is a difficult task for daily life. In times of crisis it is even harder. For that work, in that term, some daily results were really close to real number of sales though some days it was further. Covid 19 crisis, as expected, changed norms of the shopping and some days, number of sales waved in that one month as different from estimates according to last data. So, outliers are the real challenger here and predicting those days is a necessity by means of holding inventory and being prepared days before.
