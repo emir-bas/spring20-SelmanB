@@ -264,7 +264,7 @@ for(i in 1:8){
 ``` 
 
 
-### Alternative MOdelling  
+### Alternative Modelling  
 Another approach was the importance of the last 3 weeks’ weekly data for each day. So this approach was for the last 22 days. sold_count data of 7 days before, 14 days before and 21 days before were added for each product everyday. This step was applied both to xdata and xdata_lag. If effectiveness of that approach is not satisfying, in the loop which was written to create a linear model, it was not going to be used.Output of the part until this point and output of the continuing part were compared and according to observations more dependable one submitted.
 ```{r,  warning=FALSE , message=FALSE}
   oneweek<-xts(NA,Sys.Date())
