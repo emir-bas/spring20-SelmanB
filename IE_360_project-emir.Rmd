@@ -186,7 +186,11 @@ for(i in 1:8){
  
 
 ### Trend 
+One predictor to be composited with other predictors fusing various time series analysis techniques was the regular trend component. After visual inspection of the data for all given products, a linear regression horizon of 21 days was found reasonable to avoid weekday bias and including short run fluctuations in trend component, while absorbing annual seasonal components into the trend. 
+
 For estimating sales sold_count is a strong element. As first and basic estimation tool, linear model of sold_count was preferred. Linear component of each item was added with the data of the last 21 days by examining sold_count data as a time series. Then, for every product, a trend component was added as an attribute to be used as a regressor thereafter. For that calculation, lasttrend function was preferred.
+
+In order to avoid training bias, the trend components for all training and prediction data are generated as a linear extrapolation of past data up to to days before the date of the datum. 
 ```{r,  warning=FALSE , message=FALSE}
 lasttrend<-function(series,h,myindex){
   rangelast<- (myindex-2-h):(myindex-2)
